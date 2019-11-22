@@ -16,19 +16,23 @@
 <style>
   tr {
     text-align: left;
+    font-family: monospace;
     /* color: purple; */
   }
   td {
     padding: 0.3em 0.5em;
   }
+
+  .asin, .rank {
+    font-weight: bold;
+  }
 </style>
 
 <tr on:click={handleClick}>
-  <td>{asin}</td>
+  <td class='asin'>{asin}</td>
   <td>{category}</td>
-  <td>{name.length > 50 ? name.slice(0,50)+'...' : name}</td>
-
-  <!-- <td>{weight}</td>
-  <td>{dimensions}</td> -->
-  <td>{count}</td>
+  <td>{name.length > 20 ? name.slice(0,20)+'...' : name}</td>
+  <td>{weight}</td>
+  <td>{dimensions}</td>
+  <td class='rank'>{rank}</td>
 </tr>

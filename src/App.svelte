@@ -31,10 +31,6 @@
 
 <main>
 	<h1><pre>Products</pre></h1>
-	
-	<button on:click={promiseClick}>
-		reload products
-	</button>
 
 	{#await promise_products}
 		<Loading/>
@@ -52,6 +48,11 @@
 	{:catch error}
 		<ErrorLoading/>
 	{/await}
+
+	<br>
+	<button on:click={promiseClick}>
+		Reload products
+	</button>
 
 </main>
 

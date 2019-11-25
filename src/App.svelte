@@ -2,16 +2,31 @@
 	import Loading from './Loading.svelte'
 	import ErrorLoading from './ErrorLoading.svelte'
 	import Product from './Product.svelte'
+	import SearchBar from './SearchBar.svelte'
 
 
-	let app_status = { loaded: true, loading: false, error: false };
+	// let app_status = { loaded: true, loading: false, error: false };
 
+	const products_api = 'https://js-amazon-test.herokuapp.com/products/';
 	let products = [];
 
 	let promise_products = getProducts();
 
+	async function searchProduct(ASIN){
+		const res = await fetch(products_api + ASIN);
+		const txt = await res.json();
+
+		if (res.ok){
+			promiseClick();
+			// return txt.products.length;
+		} else {
+			throw new Error(txt);
+		}
+	}
+
+
 	async function getProducts(){
-		const res = await fetch('https://js-amazon-test.herokuapp.com/products/');
+		const res = await fetch(products_api);
 		const txt = await res.json();
 
 		if (res.ok){
@@ -23,19 +38,40 @@
 	}
 
 	function promiseClick(){
+		console.log('loading products...')
 		promise_products = getProducts();
 	}
 
+	function searchClick(searchString){
+		console.log('search: ' + searchString);
+		searchProduct(searchString);
+	}
+
+	function handleMessage(event){
+		// alert(event.detail.action);
+		switch(event.detail.action) {
+			case 'reload': promiseClick(); break;
+			case 'search': 
+				searchClick(event.detail.searchString);
+				break;
+		}
+	}
 
 </script>
 
 <main>
+
 	<h1><pre>Products</pre></h1>
+
+
 
 	{#await promise_products}
 		<Loading/>
 	{:then value}
-		<p>{value} {value === 1 ? 'product' : 'products'} loaded</p>
+
+		<SearchBar on:message={handleMessage}/>
+
+		
 		<table>
 			<tbody>
 				{#each products as prod (prod.id)}
@@ -45,14 +81,11 @@
 				{/each}
 			</tbody>
 		</table>
+		<p>{value} {value === 1 ? 'product' : 'products'} loaded</p>
 	{:catch error}
 		<ErrorLoading/>
 	{/await}
 
-	<br>
-	<button on:click={promiseClick}>
-		Reload products
-	</button>
 
 </main>
 
